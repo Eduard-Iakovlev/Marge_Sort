@@ -13,10 +13,12 @@ void MSort::merge(std::vector<int>* arr, int l, int m, int r) {
     int* right = new int[nr];
 
     // копируем данные во временные массивы
-    for (int i = 0; i < nl; i++)
-        left[i] = (*arr)[l + i];
-    for (int j = 0; j < nr; j++)
-        right[j] = (*arr)[m + 1 + j];
+    tmp_arr(arr, &left, nl, l);
+    tmp_arr(arr, &right, nr, m + 1);
+    //for (int i = 0; i < nl; i++)
+    //    left[i] = (*arr)[l + i];
+    //for (int j = 0; j < nr; j++)
+    //    right[j] = (*arr)[m + 1 + j];
 
     int i = 0, j = 0;
     int k = l;  // начало левой части
@@ -58,6 +60,11 @@ void MSort::merge_sort(std::vector<int>* arr, int l, int r){
 
         merge(arr, l, m, r);
     }
+}
+
+void MSort::tmp_arr(std::vector<int>* arrv ,int* arr_tmp[], int length, int begin){
+    for (int i = 0; i < length; i++)
+        *arr_tmp[i] = (*arrv)[begin + i];
 }
 
 

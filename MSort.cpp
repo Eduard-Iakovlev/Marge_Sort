@@ -51,13 +51,11 @@ void MSort::merge(std::vector<int>* arr, int l, int m, int r) {
 
 void MSort::merge_sort(std::vector<int>* arr, int l, int r){
     if (l < r) {
-        int m = l + (r - l) / 2; // находим середину массива
+        int m = l + (r - l) / 2; 
 
-        // Рекурсивно сортируем левую и правую половины
         merge_sort(arr, l, m);
         merge_sort(arr, m + 1, r);
 
-        // Объединяем отсортированные части
         merge(arr, l, m, r);
     }
 }

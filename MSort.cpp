@@ -53,8 +53,8 @@ void MSort::merge(std::vector<int>* arr, int l, int m, int r) {
 void MSort::merge_sort(std::vector<int>* arr, int l, int r){
     if (l < r) {
         int m = l + (r - l) / 2; 
-        std::thread left(std::bind(&MSort::merge_sort, std::ref(arr), l, m));
-        std::thread right(std::bind(&MSort::merge_sort, std::ref(arr), m + 1, r));
+        std::thread left(std::bind(&MSort::merge_sort, this, std::ref(arr), l, m));
+        std::thread right(std::bind(&MSort::merge_sort, this, std::ref(arr), m + 1, r));
         left.join();
         right.join();
 

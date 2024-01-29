@@ -1,4 +1,5 @@
 #pragma once
+#include <future>
 #include <vector>
 
 
@@ -9,6 +10,7 @@ public:
 	void merge(std::vector<int>* arr, int l, int m, int r);
 	void merge_sort(std::vector<int>* arr, int l, int r);
 	void tmp_arr(std::vector<int>& arrv, int* arr_tmp, int length, int begin);
+	void tmp_arr_parallel(std::vector<int>* arr, int* arr_tmp, int length, int begin, std::promise<void>&& promise);
 private:
 
 };

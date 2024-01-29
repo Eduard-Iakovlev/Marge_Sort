@@ -1,4 +1,6 @@
 #include "MSort.h"
+#include <thread>
+#include <future>
 
 MSort::MSort() {}
 
@@ -13,8 +15,8 @@ void MSort::merge(std::vector<int>* arr, int l, int m, int r) {
     int* right = new int[nr];
 
     // копируем данные во временные массивы
-      tmp_arr(*arr, left, nl, l);
-      tmp_arr(*arr, right, nr, m + 1);
+     tmp_arr(*arr, left, nl, l);
+     tmp_arr(*arr, right, nr, m + 1);
 
     int i = 0, j = 0;
     int k = l;  // начало левой части
@@ -39,22 +41,25 @@ void MSort::merge(std::vector<int>* arr, int l, int m, int r) {
     }
     // записываем оставшиеся элементы правой части
     while (j < nr) {
-        arr->at(k), right[j];
+        arr->at(k) = right[j];
         j++;
         k++;
     }
     delete[] left;
     delete[] right;
+
 }
 
 void MSort::merge_sort(std::vector<int>* arr, int l, int r){
     if (l < r) {
         int m = l + (r - l) / 2; 
-
-        merge_sort(arr, l, m);
-        merge_sort(arr, m + 1, r);
+        std::thread left(std::bind(&MSort::merge_sort, std::ref(arr), l, m));
+        std::thread right(std::bind(&MSort::merge_sort, std::ref(arr), m + 1, r));
+        left.join();
+        right.join();
 
         merge(arr, l, m, r);
+
     }
 }
 
@@ -63,5 +68,9 @@ void MSort::tmp_arr(std::vector<int>& arrv ,int* arr_tmp, int length, int begin)
         arr_tmp[i] = arrv[begin + i];
 }
 
+void MSort::tmp_arr_parallel(std::vector<int>* arr, int* arr_tmp, int length, int begin, std::promise<void>&& promise){
+    tmp_arr(*arr, arr_tmp, length, begin);
+    promise.set_value();
+}
 
 

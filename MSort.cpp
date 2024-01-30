@@ -47,19 +47,29 @@ void MSort::merge(std::vector<int>* arr, int l, int m, int r) {
     }
     delete[] left;
     delete[] right;
-
 }
 
 void MSort::merge_sort(std::vector<int>* arr, int l, int r){
     if (l < r) {
         int m = l + (r - l) / 2; 
-        std::thread left(std::bind(&MSort::merge_sort, this, std::ref(arr), l, m));
-        std::thread right(std::bind(&MSort::merge_sort, this, std::ref(arr), m + 1, r));
-        left.join();
-        right.join();
+
+        if (l - r > 500) {
+            std::future<void> left = std::async(std::launch::async, &MSort::merge_sort, this, arr, l, m);
+            std::future<void> right = std::async(std::launch::async, &MSort::merge_sort, this, arr, m + 1, r);
+            left.wait();
+            right.wait();
+        }
+        else if (l - r > 200) {
+            std::future<void> left = std::async(std::launch::async, &MSort::merge_sort, this, arr, l, m);
+            merge_sort(arr, m + 1, r);
+            left.wait();
+        }
+        else {
+            merge_sort(arr, l, m);
+            merge_sort(arr, m + 1, r);
+        }
 
         merge(arr, l, m, r);
-
     }
 }
 
@@ -68,9 +78,5 @@ void MSort::tmp_arr(std::vector<int>& arrv ,int* arr_tmp, int length, int begin)
         arr_tmp[i] = arrv[begin + i];
 }
 
-void MSort::tmp_arr_parallel(std::vector<int>* arr, int* arr_tmp, int length, int begin, std::promise<void>&& promise){
-    tmp_arr(*arr, arr_tmp, length, begin);
-    promise.set_value();
-}
 
 
